@@ -18,7 +18,9 @@ import {UpdateCoffeeDto} from "./dto/update-coffee.dto";
 import {PaginationQueryDto} from "../common/dto/pagination-query.dto";
 import {REQUEST} from "@nestjs/core";
 import {Request} from "express";
+import {ApiResponse, ApiTags} from "@nestjs/swagger";
 
+@ApiTags('coffees')
 @Controller('coffees')
 export class CoffeesController {
     constructor(
@@ -28,8 +30,10 @@ export class CoffeesController {
         console.log(request.ip);
     }
 
+    // @ApiResponse({ status: 403, description: 'Forbidden.' })
     @Get('')
-    findAll(@Query() paginationQuery: PaginationQueryDto) {
+    async findAll(@Query() paginationQuery: PaginationQueryDto) {
+        // await new Promise(resolve => setTimeout(resolve, 2000));
         const { limit, offset } = paginationQuery;
         return this.coffeesService.findAll(paginationQuery);
     }
@@ -40,7 +44,7 @@ export class CoffeesController {
     }
 
     @Post()
-    @HttpCode(HttpStatus.GONE)
+    @HttpCode(HttpStatus.CREATED)
     create(@Body() createCoffeeDto: CreateCoffeeDto) {
         console.log(createCoffeeDto instanceof CreateCoffeeDto);
         return this.coffeesService.create(createCoffeeDto)
